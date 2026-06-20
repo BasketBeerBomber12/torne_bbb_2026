@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Torneo BBB 2026</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    margin:0;
+    padding:20px;
+    background:#f5f5f5;
+}
+
+h1{
+    text-align:center;
+}
+
+.menu{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+}
+
+button{
+    padding:12px 20px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background:#1e88e5;
+    color:white;
+    font-size:16px;
+}
+
+button:hover{
+    opacity:0.9;
+}
+
+#contenuto{
+    max-width:900px;
+    margin:auto;
+}
+
+.card{
+    background:white;
+    padding:15px;
+    margin-bottom:10px;
+    border-radius:10px;
+    box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+}
+
+th, td{
+    border:1px solid #ddd;
+    padding:10px;
+    text-align:center;
+}
+
+th{
+    background:#1e88e5;
+    color:white;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🏀 Torneo BBB 2026 🏀</h1>
+
+<div class="menu">
+    <button onclick="caricaCampo('CampoSinistro')">
+        Campo Sinistro
+    </button>
+
+    <button onclick="caricaCampo('CampoDestro')">
+        Campo Destro
+    </button>
+
+    <button onclick="caricaClassifica()">
+        Classifica
+    </button>
+</div>
+
+<div id="contenuto">
+    Seleziona una voce.
+</div>
+
+<script>
+
+// INSERISCI QUI L'ID DEL TUO GOOGLE SHEET
+const SHEET_ID = "1ojkWRX_IgVKjCgeonY18141PF67b8_Qid2wwp6RB_PQ";
+
+async function caricaCampo(nomeFoglio){
+
+    const url =
+      `https://opensheet.elk.sh/${SHEET_ID}/${nomeFoglio}`;
+
+    const response = await fetch(url);
+    const dati = await response.json();
+
+    let html = `<h2>${nomeFoglio}</h2>`;
+
+    dati.forEach(partita => {
+
+        html += `
+        <div class="card">
+            <h3>
+                ${partita["Squadra A"]}
+                VS
+                ${partita["Squadra B"]}
+            </h3>
+
+            <p>
+                📅 ${partita["Data"]}
+                ⏰ ${partita["Ora"]}
+            </p>
+
+            <p>
+                Risultato:
+                ${partita["Risultato"] || "-"}
+            </p>
+        </div>
+        `;
+    });
+
+    document.getElementById("contenuto").innerHTML = html;
+}
+
+async function caricaClassifica(){
+
+    const url =
+      `https://opensheet.elk.sh/${SHEET_ID}/Classifica`;
+
+    const response = await fetch(url);
+    const dati = await response.json();
+
+    let html = `
+        <h2>Classifica</h2>
+
+        <table>
+        <tr>
+            <th>Pos</th>
+            <th>Squadra</th>
+            <th>Punti</th>
+            <th>Vinte</th>
+            <th>Perse</th>
+        </tr>
+    `;
+
+    dati.sort((a,b) =>
+        Number(b.Punti) - Number(a.Punti)
+    );
+
+    dati.forEach((squadra,index) => {
+
+        html += `
+        <tr>
+            <td>${index + 1}</td>
+            <td>${squadra.Squadra}</td>
+            <td>${squadra.Punti}</td>
+            <td>${squadra.Vinte}</td>
+            <td>${squadra.Perse}</td>
+        </tr>
+        `;
+    });
+
+    html += "</table>";
+
+    document.getElementById("contenuto").innerHTML = html;
+}
+
+</script>
+
+</body>
+</html>
