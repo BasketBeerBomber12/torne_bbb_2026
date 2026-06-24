@@ -1,9 +1,10 @@
 <!DOCTYPE html>
+
 <html lang="it">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Torneo BBB 2026</title>
+<title>Torneo Benefico Basket</title>
 
 <style>
 body{
@@ -69,6 +70,7 @@ th{
     color:white;
 }
 </style>
+
 </head>
 
 <body>
@@ -80,13 +82,20 @@ th{
         Campo Sinistro
     </button>
 
-    <button onclick="caricaCampo('CampoDestro')">
-        Campo Destro
-    </button>
+```
+<button onclick="caricaCampo('CampoDestro')">
+    Campo Destro
+</button>
 
-    <button onclick="caricaClassifica()">
-        Classifica
-    </button>
+<button onclick="caricaClassifica('ClassificaMaschile')">
+    Classifica Maschile
+</button>
+
+<button onclick="caricaClassifica('ClassificaFemminile')">
+    Classifica Femminile
+</button>
+```
+
 </div>
 
 <div id="contenuto">
@@ -95,8 +104,7 @@ th{
 
 <script>
 
-// INSERISCI QUI L'ID DEL TUO GOOGLE SHEET
-const SHEET_ID = "1ojkWRX_IgVKjCgeonY18141PF67b8_Qid2wwp6RB_PQ";
+const SHEET_ID = "15w_O4vJbYkLHdtzza1iag6nYMETyjRyP_B4NYZWTOiY";
 
 async function caricaCampo(nomeFoglio){
 
@@ -134,16 +142,16 @@ async function caricaCampo(nomeFoglio){
     document.getElementById("contenuto").innerHTML = html;
 }
 
-async function caricaClassifica(){
+async function caricaClassifica(nomeFoglio){
 
     const url =
-      `https://opensheet.elk.sh/${SHEET_ID}/Classifica`;
+      `https://opensheet.elk.sh/${SHEET_ID}/${nomeFoglio}`;
 
     const response = await fetch(url);
     const dati = await response.json();
 
     let html = `
-        <h2>Classifica</h2>
+        <h2>${nomeFoglio}</h2>
 
         <table>
         <tr>
